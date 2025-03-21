@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/usr/bin/zsh
 
 command fd -tf --color=always "$@" |
   fzf \
@@ -6,7 +6,7 @@ command fd -tf --color=always "$@" |
     --ansi \
     --style=full \
     --scheme=path \
-    --height=~50% \
+    --height=30% \
     --min-height=15 \
     --expect=enter,alt-enter \
     --preview='bat --color=always --number {}' \
