@@ -25,7 +25,7 @@ S.find_directory = ya.sync(function(_, fallback)
     if h and h.cha.is_dir then
       return h
     end
-    return find_range(c.cursor + 1, #c.files) or find_range(1, c.cursor)
+    return find_range(c.cursor + 1, #c.files) or find_range(1, c.cursor - 1)
   end
 
   local ret = exec() or (fallback and h) or nil
@@ -47,7 +47,7 @@ end
 
 ---@param value string
 function H.parse_input(value)
-  return "^" .. value:gsub("%s*/$", ""):gsub("%.", "\\."):gsub("%s+", ".*")
+  return value:gsub("%s*/$", ""):gsub("%.", "\\."):gsub("%s+", ".*")
 end
 
 -- 将|cur_pref | cx.current.pref|还原为|old_pref|
@@ -81,7 +81,7 @@ function M:entry()
     last_event = event
 
     if event == 0 or event == 2 then
-      H.escape(false)
+      H.escape(true)
       break
     end
     --- @cast value -?
@@ -96,8 +96,7 @@ function M:entry()
     ya.mgr_emit("find_do", { query, smart = true })
 
     if event == 1 then
-      ya.mgr_emit("open", {})
-      H.escape(true)
+      H.escape(false)
       break
     end
 
@@ -105,7 +104,7 @@ function M:entry()
       local obj = S.find_directory()
       if obj then
         H.escape(true)
-        ya.mgr_emit(obj.is_dir and "cd" or "open", { obj.url })
+        ya.mgr_emit("cd", { obj.url })
         input = H.input()
       else
         input = H.input(value:gsub("%s*/", ""))
@@ -114,7 +113,7 @@ function M:entry()
     end
   end
 
-  if last_event ~= 2 then
+  if last_event ~= 1 then
     -- restore pref
     H.set_pref(pref)
   end
