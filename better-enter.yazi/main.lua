@@ -11,7 +11,7 @@ local map = {} --- @type table<string, fun(self: any, ctx: Yazi.ctx):boolean>
 function map:enter_or_open(ctx)
   local file = ctx.file
   if file then
-    ya.mgr_emit(file.cha.is_dir and "cd" or "open", { tostring(file.url) })
+    ya.mgr_emit(file.cha.is_dir and "cd" or "open", { tostring(file.url), hovered = true })
   end
   return true
 end
