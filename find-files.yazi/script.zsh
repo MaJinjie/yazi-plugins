@@ -1,6 +1,6 @@
 #!/usr/bin/zsh
 
-command fd -tf --color=always "$@" |
+command fd --color=always ${(Q)${(z)1}} |
   fzf \
     --multi \
     --ansi \
@@ -9,5 +9,10 @@ command fd -tf --color=always "$@" |
     --height=30% \
     --min-height=15 \
     --expect=enter,alt-enter \
-    --preview='bat --color=always --number {}' \
-    --bind='focus:transform-preview-label:((FZF_POS)) && echo \ {}\ '
+    --preview='
+      r={}; r=${~r}; \
+      ([ -f $r ] && bat --color=always --number $r) || 
+      ([ -d $r ] && ls $r | less) || 
+      (echo $r 2> /dev/null | head -200)
+    ' \
+    --bind='focus:transform-preview-label:((FZF_POS)) && echo \ {}\ ' ${(Q)${(z)2}}

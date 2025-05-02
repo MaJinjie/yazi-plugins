@@ -6,7 +6,7 @@ export -UT RG_ARGS rg_args
 TEMP=$(mktemp -u)
 trap 'rm -rf $TEMP' EXIT
 
-rg_args=( "--column" "--line-number" "--no-heading" "--color=always" "--smart-case" "$@" )
+rg_args=( "--column" "--line-number" "--no-heading" "--color=always" "--smart-case" ${(Q)${(z)1}} )
 
 TRANSFORMER='
   local left right
@@ -49,8 +49,8 @@ TRANSFORMER='
   --preview='bat --color=always --number --highlight-line {2} -- {1}' \
   --preview-window='up,35%,+{2}/2' \
   --bind='focus:transform-preview-label:((FZF_POS)) && echo \ {1}\ ' \
-  --bind="change:transform:$TRANSFORMER"
-
+  --bind="change:transform:$TRANSFORMER" \
+  ${(Q)${(z)2}}
 
 # echo "\n====================" >> debug.log
 # echo query:$FZF_QUERY >> debug.log
